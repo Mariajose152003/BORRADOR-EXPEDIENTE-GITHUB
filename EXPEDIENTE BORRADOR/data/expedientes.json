@@ -1,0 +1,22 @@
+[
+  {
+    "codigo": "00957-2022-0-2111-JR-LA-01",
+    "reporte": {
+      "numero": "00957-2022-0-2111-JR-LA-01",
+      "distritoJudicial": "PUNO",
+      "organoJurisdiccional": "Juzgado de Trabajo - Zona Norte - Sede Juliaca",
+      "materia": "DESNATURALIZACIÓN DE CONTRATO",
+      "estado": "CONCLUIDO",
+      "etapaProcesal": "SENTENCIA FIRME (ARCHIVO DEFINITIVO)",
+      "fechaInicio": "02/09/2022"
+    },
+    "actuaciones": [
+      {
+        "numero": 1,
+        "fecha": "02/09/2022",
+        "acto": "INTERPONE DEMANDA LABORAL",
+        "pdfUrl": "expedientes/1 DEMANDA Y ANEXOS 1-658_261010_092318.pdf"
+      }
+    ]
+  }
+]

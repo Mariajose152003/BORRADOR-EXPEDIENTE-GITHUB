@@ -1,0 +1,2947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#210d1b">
+  <title>Simulador académico de expedientes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, Helvetica, sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      --wine: #870039;
+      --wine-dark: #5c102a;
+      --gold: #ffb600;
+      --ink: #172033;
+      --muted: #718096;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: grid;
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px;
+      place-items: center;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse at 4% 15%, rgba(100, 0, 43, .5), transparent 40%),
+        radial-gradient(ellipse at 96% 90%, rgba(105, 60, 0, .26), transparent 34%),
+        linear-gradient(125deg, #170d1c, #111522 62%, #1d1716);
+      color: var(--ink);
+    }
+
+    .login-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: min(1124px, 100%);
+      min-height: 576px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 34px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    .brand-panel {
+      display: flex;
+      flex-direction: column;
+      padding: 56px;
+      background: linear-gradient(145deg, #47102d 0%, #281326 58%, #111522 100%);
+      color: #fff;
+    }
+
+    .brand-mark-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .scale-mark {
+      display: grid;
+      width: 61px;
+      height: 61px;
+      place-items: center;
+      border: 2px solid var(--gold);
+      border-radius: 19px;
+      color: var(--gold);
+    }
+
+    .scale-mark svg {
+      width: 39px;
+      height: 39px;
+    }
+
+    .country-tag {
+      padding: 7px 14px;
+      border: 1px solid rgba(255, 182, 0, .25);
+      border-radius: 99px;
+      background: rgba(255, 182, 0, .1);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .brand-panel h1 {
+      margin: 0 0 8px;
+      font-size: clamp(21px, 2vw, 27px);
+      font-weight: 800;
+      letter-spacing: -.7px;
+    }
+
+    .motto {
+      margin: 0;
+      color: #c5a9b8;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    .quick-links {
+      display: grid;
+      gap: 18px;
+      margin-top: 38px;
+    }
+
+    .quick-link {
+      display: flex;
+      min-height: 69px;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 20px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 17px;
+      background: rgba(255, 255, 255, .055);
+      color: #fff;
+      text-align: left;
+    }
+
+    .quick-link-icon {
+      width: 25px;
+      height: 25px;
+      flex: 0 0 auto;
+      color: var(--gold);
+    }
+
+    .quick-link strong,
+    .quick-link span {
+      display: block;
+    }
+
+    .quick-link strong {
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .quick-link span {
+      color: #aeb0bf;
+      font-size: 13px;
+    }
+
+    .academic-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+      padding: 12px 15px;
+      border: 1px dashed rgba(255, 182, 0, .35);
+      border-radius: 14px;
+      background: rgba(255, 182, 0, .09);
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .academic-note svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+    }
+
+    .form-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 48px;
+      background: #fff;
+    }
+
+    .login-content {
+      width: min(100%, 464px);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: var(--wine);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+    }
+
+    .grid-icon {
+      display: grid;
+      width: 32px;
+      height: 24px;
+      grid-template-columns: repeat(3, 8px);
+      grid-template-rows: repeat(2, 8px);
+      gap: 3px;
+    }
+
+    .grid-icon i {
+      border: 1px solid var(--wine);
+    }
+
+    .grid-icon i:first-child,
+    .grid-icon i:nth-child(4) {
+      background: var(--wine);
+    }
+
+    .login-content h2 {
+      margin: 0 0 7px;
+      font-size: 30px;
+      letter-spacing: -1px;
+    }
+
+    .intro {
+      margin: 0 0 29px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: #3d4a60;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .input-wrap {
+      display: flex;
+      height: 53px;
+      align-items: center;
+      gap: 13px;
+      padding: 0 15px;
+      border: 2px solid #e1e8f0;
+      border-radius: 15px;
+      background: #f8fafc;
+      color: #94a3b8;
+    }
+
+    .input-wrap svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      min-width: 0;
+      height: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--wine);
+      box-shadow: 0 0 0 4px rgba(135, 0, 57, .12);
+    }
+
+    .password-toggle {
+      display: grid;
+      width: 28px;
+      height: 36px;
+      flex: 0 0 auto;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .password-toggle svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .submit-button,
+    .understood-button {
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(100deg, #94003f, #671126);
+      box-shadow: 0 10px 20px rgba(135, 0, 57, .24);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .submit-button {
+      display: flex;
+      width: 100%;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 41px;
+      letter-spacing: 1px;
+    }
+
+    .submit-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .register-link,
+    .warning-link {
+      display: block;
+      width: fit-content;
+      margin: 23px auto 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .register-link {
+      color: var(--wine);
+      text-decoration: underline;
+    }
+
+    .warning-link {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 20px;
+      color: var(--muted);
+    }
+
+    .warning-link svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #f2b600;
+      outline-offset: 3px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 5;
+      inset: 0;
+      display: grid;
+      padding: 24px;
+      place-items: center;
+      background: rgba(14, 17, 29, .65);
+      backdrop-filter: blur(11px);
+      -webkit-backdrop-filter: blur(11px);
+    }
+
+    .modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .warning-modal {
+      width: min(396px, 100%);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .7);
+      border-radius: 31px;
+      background: #fff;
+      box-shadow: 0 25px 65px rgba(0, 0, 0, .35);
+      text-align: center;
+    }
+
+    .modal-header {
+      display: grid;
+      height: 111px;
+      place-items: center;
+      border-bottom: 4px solid var(--gold);
+      background: var(--wine);
+    }
+
+    .warning-icon {
+      display: grid;
+      width: 62px;
+      height: 62px;
+      place-items: center;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold);
+    }
+
+    .warning-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .modal-body {
+      padding: 37px 30px 34px;
+    }
+
+    .modal-body p {
+      margin: 0 auto 29px;
+      color: #111827;
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .understood-button {
+      min-width: 173px;
+      min-height: 46px;
+      padding: 0 24px;
+      border-radius: 15px;
+      font-size: 16px;
+    }
+
+    .login-screen {
+      width: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .login-screen[hidden],
+    .case-panel[hidden] {
+      display: none;
+    }
+
+    .register-dialog {
+      width: min(420px, calc(100% - 32px));
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 25px 65px rgba(0, 0, 0, .35);
+      color: var(--ink);
+    }
+
+    .register-dialog::backdrop {
+      background: rgba(14, 17, 29, .68);
+      backdrop-filter: blur(8px);
+    }
+
+    .register-dialog-header {
+      padding: 23px 26px;
+      background: var(--wine);
+      color: #fff;
+    }
+
+    .register-dialog-header h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+
+    .register-dialog-header p {
+      margin: 0;
+      color: #f2dce6;
+      font-size: 13px;
+    }
+
+    .register-dialog form {
+      padding: 24px 26px 26px;
+    }
+
+    .register-dialog .field {
+      margin-bottom: 16px;
+    }
+
+    .register-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .register-actions button {
+      min-height: 43px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .cancel-button {
+      background: #eef1f5;
+      color: #39465a;
+    }
+
+    .create-button {
+      background: var(--wine);
+      color: #fff;
+    }
+
+    .demo-disclaimer {
+      margin: 0 0 18px;
+      padding: 11px 13px;
+      border: 1px solid #f4d58a;
+      border-radius: 12px;
+      background: #fff9e8;
+      color: #684b00;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .case-panel {
+      width: min(1124px, 100%);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    .case-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 26px 32px;
+      background: linear-gradient(100deg, #47102d, #211321);
+      color: #fff;
+    }
+
+    .case-header h1 {
+      margin: 0 0 5px;
+      font-size: 24px;
+    }
+
+    .case-header p {
+      margin: 0;
+      color: #dfcbd5;
+      font-size: 14px;
+    }
+
+    .logout-button {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .case-content {
+      padding: 28px 32px 34px;
+    }
+
+    .case-content h2 {
+      margin: 0 0 8px;
+      font-size: 21px;
+    }
+
+    .case-intro {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid #e6eaf0;
+      border-radius: 14px;
+    }
+
+    .case-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .case-table th,
+    .case-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e6eaf0;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .case-table th {
+      background: #f7f8fb;
+      color: #475569;
+      font-size: 12px;
+      letter-spacing: .4px;
+    }
+
+    .case-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .pdf-placeholder {
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .search-demo {
+      width: min(1240px, 100%);
+      margin: 30px auto;
+      overflow: hidden;
+      border: 1px solid #e4e7ec;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, .12);
+    }
+
+    .search-topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 28px;
+      border-bottom: 1px solid #e6e8ec;
+    }
+
+    .search-topbar h1 {
+      margin: 0 0 4px;
+      color: var(--wine-dark);
+      font-size: 22px;
+    }
+
+    .search-topbar p,
+    .search-user {
+      margin: 0;
+      color: #667085;
+      font-size: 13px;
+    }
+
+    .search-user {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .search-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 22px;
+      background: var(--wine-dark);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .search-disclaimer {
+      margin: 25px auto;
+      padding: 18px;
+      width: min(90%, 1020px);
+      border: 1px solid #f2d7dc;
+      border-radius: 9px;
+      background: #fffafa;
+      color: #71303c;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .search-disclaimer strong {
+      display: block;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .search-heading {
+      margin: 28px 12px 14px;
+      color: var(--wine-dark);
+      font-size: 22px;
+      letter-spacing: 4px;
+      text-align: center;
+    }
+
+    .search-count {
+      margin: 0 24px 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .search-card {
+      margin: 0 24px 30px;
+      overflow: hidden;
+      border: 1px solid #e4e7ec;
+      border-radius: 8px;
+      box-shadow: 0 14px 30px rgba(16, 24, 40, .08);
+    }
+
+    .search-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f1f2f4;
+    }
+
+    .search-tab {
+      min-height: 60px;
+      padding: 12px;
+      border: 0;
+      background: transparent;
+      color: #667085;
+      cursor: pointer;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .search-tab[aria-selected="true"] {
+      background: var(--wine-dark);
+      color: #fff;
+    }
+
+    .search-form {
+      padding: 32px clamp(18px, 7vw, 96px);
+    }
+
+    .search-form[hidden],
+    .captcha-block[hidden],
+    .search-results[hidden] {
+      display: none;
+    }
+
+    .filter-fields {
+      display: grid;
+      grid-template-columns: minmax(150px, 210px) minmax(0, 1fr);
+      align-items: center;
+      gap: 15px 22px;
+    }
+
+    .filter-fields label,
+    .part-field label,
+    .code-title {
+      color: #475467;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .required-mark {
+      color: #dc2626;
+    }
+
+    .filter-fields select,
+    .filter-fields input,
+    .part-field input,
+    .code-digit {
+      width: 100%;
+      min-height: 43px;
+      padding: 9px 13px;
+      border: 1px solid #d0d5dd;
+      border-radius: 6px;
+      background: #fff;
+      color: #344054;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .part-field {
+      display: grid;
+      grid-template-columns: minmax(110px, 210px) minmax(0, 1fr);
+      align-items: start;
+      gap: 15px 22px;
+      margin-top: 20px;
+    }
+
+    .part-field label {
+      padding-top: 13px;
+      text-align: right;
+    }
+
+    .part-field small {
+      display: block;
+      margin-top: 7px;
+      color: #4778d0;
+      font-size: 12px;
+      font-style: italic;
+    }
+
+    .required-note {
+      margin: 24px 0 0;
+      color: #dc2626;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .code-entry {
+      padding: 25px 0 5px;
+      text-align: center;
+    }
+
+    .code-title {
+      margin: 0 0 22px;
+    }
+
+    .code-digits {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .code-digit-wrap {
+      display: grid;
+      width: 72px;
+      gap: 5px;
+      justify-items: center;
+    }
+
+    .code-digit-wrap:first-child,
+    .code-digit-wrap:nth-of-type(4) {
+      width: 98px;
+    }
+
+    .code-digit {
+      padding: 8px 6px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .code-hint {
+      min-height: 12px;
+      color: #667085;
+      font-size: 10px;
+    }
+
+    .code-separator {
+      padding-bottom: 11px;
+      color: #667085;
+    }
+
+    .example-code {
+      display: inline-block;
+      margin: 18px 0 0;
+      padding: 7px 12px;
+      border: 1px solid #ecc6ce;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--wine-dark);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .captcha-block {
+      padding: 24px 18px 30px;
+      border-top: 1px solid #e6e8ec;
+      background: #f8f9fa;
+      text-align: center;
+    }
+
+    .captcha-title {
+      margin: 0 0 17px;
+      color: #344054;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .captcha-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .captcha-challenge {
+      min-width: 142px;
+      padding: 13px 18px;
+      border: 2px solid #78132d;
+      border-radius: 5px;
+      background: repeating-linear-gradient(120deg, #141414 0 7px, #202020 7px 10px);
+      color: #f1b6c3;
+      font-family: Georgia, serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 7px;
+      text-decoration: line-through;
+      text-shadow: 1px 2px #622638;
+    }
+
+    .captcha-refresh,
+    .captcha-input {
+      min-height: 48px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      background: #fff;
+      color: #344054;
+      font: inherit;
+    }
+
+    .captcha-refresh {
+      min-width: 48px;
+      cursor: pointer;
+      color: var(--wine-dark);
+      font-size: 20px;
+    }
+
+    .captcha-input {
+      width: 142px;
+      padding: 9px 12px;
+      border-width: 2px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .consult-button {
+      display: block;
+      width: min(100%, 365px);
+      min-height: 54px;
+      margin: 24px auto 0;
+      border: 0;
+      border-radius: 6px;
+      background: var(--wine-dark);
+      box-shadow: 0 8px 18px rgba(92, 16, 42, .2);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .search-results {
+      margin: 0 14px 30px;
+      overflow: hidden;
+      border-radius: 5px;
+      background: #fff;
+      color: #243044;
+      box-shadow: 0 14px 30px rgba(16, 24, 40, .12);
+    }
+
+    .results-toolbar {
+      display: flex;
+      min-height: 92px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px;
+      background: #5c0632;
+      color: #fff;
+    }
+
+    .results-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .results-title-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 50%;
+      background: #e6b9c8;
+      color: #5c0632;
+      font-size: 22px;
+    }
+
+    .results-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .results-actions button,
+    .result-view-button {
+      min-height: 41px;
+      padding: 0 17px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .upload-case-button {
+      background: #f5a000;
+      color: #211800;
+    }
+
+    .new-search-button {
+      border: 1px solid rgba(255, 255, 255, .2) !important;
+      border-radius: 24px !important;
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+    }
+
+    .results-notice {
+      display: flex;
+      min-height: 47px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 24px;
+      background: #f4e5e9;
+      color: #6e1b36;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .results-notice time {
+      color: #9aa4b2;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    .results-table-wrap {
+      overflow-x: auto;
+      padding: 19px;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .results-table th {
+      padding: 17px 14px;
+      background: #5c0632;
+      color: #fff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .results-table td {
+      padding: 18px 14px;
+      border-bottom: 1px solid #e1e5eb;
+      font-size: 12px;
+    }
+
+    .results-case-number {
+      color: #6b1830;
+      font-weight: 800;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+
+    .case-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border: 1px solid #e3e6eb;
+      border-radius: 20px;
+      background: #f4f5f6;
+      color: #5b6573;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .case-status::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #9299a3;
+      content: "";
+    }
+
+    .result-view-button {
+      min-width: 68px;
+      min-height: 30px;
+      border-radius: 5px;
+      background: #5c0632;
+      color: #fff;
+    }
+
+    .results-case-number {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+
+    .case-detail[hidden],
+    .case-tab-panel[hidden] {
+      display: none;
+    }
+
+    .case-detail {
+      width: min(1450px, calc(100% - 42px));
+      margin: 34px auto 58px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 18px 48px rgba(16, 24, 40, .14);
+    }
+
+    .detail-hero {
+      padding: 32px clamp(22px, 4vw, 54px) 30px;
+      border-bottom: 5px solid #d8a5b0;
+      background: #5c1020;
+      color: #fff;
+    }
+
+    .detail-identity {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .detail-folder {
+      display: grid;
+      width: 78px;
+      height: 78px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .1);
+      color: #e9b7c2;
+      font-size: 38px;
+    }
+
+    .detail-kicker {
+      display: inline-block;
+      margin: 0 12px 8px 0;
+      color: #ead0d7;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .detail-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border: 1px solid #8993a1;
+      border-radius: 99px;
+      background: #596575;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .detail-title {
+      margin: 0 0 8px;
+      font-size: clamp(23px, 3.3vw, 38px);
+      letter-spacing: -.8px;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-location {
+      margin: 0;
+      color: #dfbdc7;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    .detail-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .detail-actions button,
+    .back-to-results {
+      min-height: 44px;
+      padding: 0 19px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .detail-actions button {
+      flex: 1 1 190px;
+      white-space: nowrap;
+    }
+
+    .detail-print {
+      background: #fff;
+      color: #5c1020;
+    }
+
+    .detail-summary-action {
+      background: #dcaab5;
+      color: #5c1020;
+    }
+
+    .detail-examine {
+      background: #410b1a;
+      color: #fff;
+    }
+
+    .detail-reniec {
+      background: #ed5909;
+      color: #fff;
+    }
+
+    .process-route {
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafbfc;
+    }
+
+    .route-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      padding: 18px clamp(20px, 3vw, 34px);
+      border-bottom: 4px solid #f2a900;
+      background: #111b2a;
+      color: #fff;
+      font-size: 17px;
+      letter-spacing: .3px;
+    }
+
+    .route-heading span {
+      color: #ffb600;
+      font-size: 22px;
+    }
+
+    .route-scroller {
+      overflow-x: auto;
+      padding: 30px 22px 25px;
+    }
+
+    .route-stages {
+      position: relative;
+      display: grid;
+      min-width: 900px;
+      grid-template-columns: repeat(7, minmax(100px, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .route-stages::before {
+      position: absolute;
+      top: 20px;
+      right: 7%;
+      left: 7%;
+      height: 4px;
+      background: linear-gradient(to right, #a71921 0 66%, #dce2e9 66% 100%);
+      content: "";
+    }
+
+    .route-stage {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      flex-direction: column;
+      padding: 0 4px;
+      border: 0;
+      background: transparent;
+      color: #283448;
+      cursor: pointer;
+      font: inherit;
+      text-align: center;
+    }
+
+    .route-stage-marker {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 5px solid #fff;
+      border-radius: 50%;
+      background: #a71921;
+      box-shadow: 0 3px 10px rgba(16, 24, 40, .18);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .route-stage-label {
+      margin-top: 11px;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .route-stage-date {
+      min-height: 17px;
+      margin-top: 5px;
+      color: #718096;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .route-stage[data-state="current"] .route-stage-marker {
+      border-color: #fff4b2;
+      background: #f5a000;
+      box-shadow: 0 0 0 7px rgba(255, 222, 69, .35);
+    }
+
+    .route-stage[data-state="current"] .route-stage-label {
+      color: #ba2525;
+    }
+
+    .route-stage[data-state="future"] {
+      color: #97a4b5;
+    }
+
+    .route-stage[data-state="future"] .route-stage-marker {
+      background: #cbd5e1;
+    }
+
+    .route-stage[aria-pressed="true"] .route-stage-marker {
+      outline: 3px solid #26364a;
+      outline-offset: 3px;
+    }
+
+    .route-stage-current {
+      min-height: 20px;
+      margin-top: 7px;
+      padding: 3px 11px;
+      border-radius: 99px;
+      background: #fff0a3;
+      color: #805300;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .route-stage[data-state="past"] .route-stage-current,
+    .route-stage[data-state="future"] .route-stage-current {
+      visibility: hidden;
+    }
+
+    .route-description {
+      min-height: 40px;
+      margin: 0;
+      padding: 0 26px 17px;
+      color: #536175;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .case-tabs {
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 1px solid #e4e7ec;
+      background: #fff;
+    }
+
+    .case-tab {
+      min-height: 58px;
+      flex: 1 0 auto;
+      padding: 0 22px;
+      border: 0;
+      border-bottom: 4px solid transparent;
+      background: transparent;
+      color: #687385;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .6px;
+    }
+
+    .case-tab[aria-selected="true"] {
+      border-bottom-color: #681324;
+      color: #681324;
+    }
+
+    .case-tab-panel {
+      padding: clamp(24px, 4vw, 54px);
+    }
+
+    .summary-heading {
+      margin: 0 0 30px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #d8a5b0;
+      color: #681324;
+      font-size: clamp(20px, 2vw, 26px);
+      letter-spacing: 1.2px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(270px, 1fr);
+      align-items: stretch;
+      gap: 34px;
+    }
+
+    .legal-synthesis {
+      padding: 30px clamp(20px, 3vw, 38px);
+      border-left: 10px solid #681324;
+      border-radius: 19px;
+      background: #fbf4f6;
+      color: #455064;
+      box-shadow: 0 10px 30px rgba(16, 24, 40, .08);
+    }
+
+    .legal-synthesis h4,
+    .resolution-card h4 {
+      margin: 0 0 19px;
+      font-size: 13px;
+      letter-spacing: 1.4px;
+    }
+
+    .legal-synthesis h4 {
+      color: #681324;
+    }
+
+    .legal-synthesis p {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.85;
+      text-align: justify;
+    }
+
+    .case-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .case-tags span {
+      padding: 8px 13px;
+      border: 1px solid #d8a5b0;
+      border-radius: 9px;
+      background: #fff;
+      color: #681324;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .overall-progress {
+      margin-top: 28px;
+    }
+
+    .progress-caption {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: #681324;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .8px;
+    }
+
+    .progress-track {
+      height: 13px;
+      overflow: hidden;
+      border: 1px solid #e3b5c0;
+      border-radius: 99px;
+      background: #fff;
+    }
+
+    .progress-fill {
+      width: 80%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #681324, #b73551);
+    }
+
+    .resolution-card {
+      position: relative;
+      display: flex;
+      min-height: 100%;
+      justify-content: center;
+      flex-direction: column;
+      padding: 35px;
+      overflow: hidden;
+      border-radius: 20px;
+      border-bottom: 9px solid #d8a5b0;
+      background: #5c1020;
+      box-shadow: 0 15px 35px rgba(16, 24, 40, .16);
+      color: #fff;
+    }
+
+    .resolution-card h4 {
+      margin-bottom: 12px;
+      color: #d7a7b2;
+    }
+
+    .resolution-card h3 {
+      margin: 0 0 19px;
+      font-size: clamp(22px, 2vw, 29px);
+    }
+
+    .resolution-card p {
+      margin: 0;
+      color: #e2c6cd;
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.65;
+    }
+
+    .resolution-number {
+      display: block;
+      margin-top: 18px;
+      color: #f5dce2;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .detail-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 0;
+    }
+
+    .detail-list div,
+    .detail-record {
+      padding: 18px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fafbfc;
+    }
+
+    .detail-list dt,
+    .detail-record strong {
+      margin-bottom: 7px;
+      color: #681324;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .detail-list dd {
+      margin: 0;
+      color: #344054;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .detail-list--stacked {
+      grid-template-columns: 1fr;
+    }
+
+    .detail-list--stacked div {
+      display: grid;
+      grid-template-columns: minmax(150px, .7fr) minmax(0, 2fr);
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .detail-list--stacked dd {
+      grid-column: 2;
+    }
+
+    .record-list,
+    .timeline-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .detail-record {
+      display: grid;
+      grid-template-columns: minmax(130px, .35fr) minmax(0, 1fr);
+      gap: 10px 20px;
+      color: #475467;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .detail-record strong {
+      margin: 0;
+    }
+
+    .timeline-entry {
+      position: relative;
+      padding: 4px 0 18px 27px;
+      border-left: 2px solid #e2bcc5;
+      color: #475467;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .timeline-entry::before {
+      position: absolute;
+      top: 5px;
+      left: -7px;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: #8a1c34;
+      box-shadow: 0 0 0 1px #8a1c34;
+      content: "";
+    }
+
+    .timeline-entry time {
+      display: block;
+      margin-bottom: 4px;
+      color: #681324;
+      font-weight: 900;
+    }
+
+    .detail-back-row {
+      padding: 0 clamp(24px, 4vw, 54px) 48px;
+    }
+
+    .back-to-results {
+      min-width: 280px;
+      min-height: 58px;
+      border-radius: 19px;
+      background: #5c1020;
+      box-shadow: 0 6px 0 #3e0b17;
+      color: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 10;
+      right: 24px;
+      bottom: 24px;
+      width: min(390px, calc(100% - 32px));
+      padding: 15px 18px;
+      transform: translateY(15px);
+      border: 1px solid #fecaca;
+      border-left: 5px solid #b42318;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, .22);
+      color: #7f1d1d;
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .toast[data-type="success"] {
+      border-color: #bbf7d0;
+      border-left-color: #15803d;
+      color: #166534;
+    }
+
+    .toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    body.portal-active {
+      display: block;
+      min-height: 100vh;
+      padding: 0;
+      background: #f1f2f4;
+    }
+
+    .portal-active .search-demo {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: #f1f2f4;
+      box-shadow: none;
+    }
+
+    .portal-brandbar {
+      display: flex;
+      min-height: 90px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 12px clamp(24px, 5vw, 80px);
+      background: #fff;
+      color: #343434;
+    }
+
+    .demo-brand,
+    .brand-product {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .demo-brand-copy,
+    .brand-product-copy {
+      display: grid;
+      gap: 4px;
+    }
+
+    .demo-brand-copy strong {
+      color: #4c4c46;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .demo-brand-copy small,
+    .brand-product-copy small {
+      color: #76766d;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .demo-mark {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border: 3px solid #a31616;
+      color: #a31616;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .brand-product {
+      color: #6c1117;
+      text-align: right;
+    }
+
+    .brand-product-icon {
+      color: #a31616;
+      font-size: 37px;
+      line-height: 1;
+    }
+
+    .brand-product-copy strong {
+      font-size: 17px;
+    }
+
+    .brand-product-copy small {
+      color: #a31616;
+      font-family: Arial, Helvetica, sans-serif;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .portal-active .search-nav {
+      min-height: 64px;
+      padding: 0 clamp(24px, 6vw, 100px);
+      background: #a31616;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .portal-active .search-nav span:last-child {
+      margin-left: auto;
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .portal-active .search-disclaimer {
+      width: min(90%, 1450px);
+      margin: 13px auto 30px;
+      padding: 10px 24px;
+      border-color: #b22323;
+      border-radius: 10px;
+      background: #fff;
+      color: #a31616;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .portal-active .search-disclaimer strong {
+      margin-bottom: 2px;
+      font-size: 23px;
+      letter-spacing: 0;
+    }
+
+    .portal-active .search-heading {
+      margin: 30px 12px 18px;
+      color: #a31616;
+      font-size: 23px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .portal-active .search-count {
+      margin: 0 auto 16px;
+      width: 90%;
+      color: #718096;
+    }
+
+    .portal-active .search-card {
+      width: 90%;
+      margin: 0 auto 30px;
+      border-color: #dedede;
+      border-radius: 5px;
+      background: #f4f4f4;
+      box-shadow: 0 3px 9px rgba(0, 0, 0, .22);
+    }
+
+    .portal-active .search-tabs {
+      border-bottom: 1px solid #a31616;
+      background: #f2f2f2;
+    }
+
+    .portal-active .search-tab {
+      min-height: 65px;
+      color: #a31616;
+      font-size: 18px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .portal-active .search-tab[aria-selected="true"] {
+      background: #a31616;
+      color: #fff;
+    }
+
+    .portal-active .search-form {
+      padding: 25px clamp(22px, 8vw, 125px) 24px;
+      background: #f4f4f4;
+    }
+
+    .portal-active .filter-fields {
+      grid-template-columns: minmax(155px, 240px) minmax(0, 1fr);
+      gap: 24px 22px;
+    }
+
+    .portal-active .filter-fields label,
+    .portal-active .part-field label,
+    .portal-active .code-title {
+      color: #282828;
+      font-size: 16px;
+    }
+
+    .portal-active .filter-fields select,
+    .portal-active .filter-fields input,
+    .portal-active .part-field input,
+    .portal-active .code-digit {
+      min-height: 44px;
+      border-color: #d0d0d0;
+      border-radius: 6px;
+      color: #4a4a4a;
+      font-size: 16px;
+    }
+
+    .portal-active .part-field {
+      grid-template-columns: minmax(155px, 240px) minmax(0, 1fr);
+      gap: 18px 22px;
+      margin-top: 24px;
+    }
+
+    .portal-active .part-field label {
+      padding-top: 12px;
+      text-align: right;
+    }
+
+    .portal-active .part-field small {
+      color: #0645ff;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .portal-active .required-note {
+      margin-top: 28px;
+      font-size: 16px;
+      text-transform: capitalize;
+    }
+
+    .portal-active .code-entry {
+      padding: 18px 0 8px;
+    }
+
+    .portal-active .code-title {
+      margin-bottom: 24px;
+      text-transform: capitalize;
+    }
+
+    .portal-active .code-digit-wrap {
+      width: 72px;
+    }
+
+    .portal-active .code-digit-wrap:first-child,
+    .portal-active .code-digit-wrap:nth-of-type(4) {
+      width: 92px;
+    }
+
+    .portal-active .code-digit {
+      min-height: 42px;
+      padding: 6px;
+      font-weight: 700;
+    }
+
+    .portal-active .example-code {
+      margin-top: 18px;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .portal-active .captcha-block {
+      margin: 28px calc(-1 * clamp(22px, 8vw, 125px)) -24px;
+      padding: 35px 18px 32px;
+      border-top-color: #e0e0e0;
+      background: #fff;
+    }
+
+    .portal-active .captcha-title {
+      color: #282828;
+      font-size: 18px;
+    }
+
+    .portal-active .captcha-challenge {
+      min-width: 148px;
+      border-color: #111;
+      border-radius: 0;
+      background: #a31616;
+      color: #f8e35b;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 26px;
+      letter-spacing: 5px;
+      text-decoration: line-through;
+      text-decoration-color: #fff;
+      text-shadow: 2px 1px #f21c1c;
+    }
+
+    .portal-active .captcha-refresh,
+    .portal-active .captcha-input {
+      min-height: 50px;
+      border-color: #aaa;
+      border-radius: 7px;
+      color: #222;
+    }
+
+    .portal-active .captcha-refresh {
+      font-size: 24px;
+    }
+
+    .portal-active .consult-button {
+      width: 210px;
+      min-height: 54px;
+      border-radius: 28px;
+      background: #a31616;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .portal-active .search-results {
+      width: 90%;
+      margin: 0 auto 24px;
+      background: #fff;
+    }
+
+    .portal-active .results-table th,
+    .portal-active .results-table td {
+      white-space: nowrap;
+    }
+
+    .portal-footer {
+      width: 90%;
+      margin: 0 auto 20px;
+      padding: 8px 16px 12px;
+      background: #a31616;
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .portal-active .portal-footer {
+      width: 100%;
+      margin-bottom: 0;
+      padding-bottom: 24px;
+    }
+
+    .footer-pattern {
+      height: 27px;
+      margin: -8px -16px 8px;
+      background-color: #aaa;
+      background-image:
+        linear-gradient(45deg, #666 25%, transparent 25%),
+        linear-gradient(-45deg, #666 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #666 75%),
+        linear-gradient(-45deg, transparent 75%, #666 75%);
+      background-size: 14px 14px;
+      background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 18px;
+      }
+
+      .case-header {
+        align-items: flex-start;
+        padding: 23px 22px;
+      }
+
+      .case-content {
+        padding: 24px 18px;
+      }
+
+      .search-topbar {
+        flex-direction: column;
+        padding: 18px;
+      }
+
+      .portal-brandbar {
+        align-items: flex-start;
+        padding: 14px 18px;
+      }
+
+      .brand-product {
+        gap: 7px;
+      }
+
+      .brand-product-icon {
+        display: none;
+      }
+
+      .portal-active .search-nav {
+        gap: 10px;
+        padding: 10px 18px;
+      }
+
+      .portal-active .search-disclaimer,
+      .portal-active .search-card,
+      .portal-active .search-count,
+      .portal-active .search-results,
+      .portal-footer {
+        width: calc(100% - 28px);
+      }
+
+      .case-detail {
+        width: calc(100% - 28px);
+        margin: 20px auto 38px;
+        border-radius: 14px;
+      }
+
+      .detail-identity {
+        align-items: flex-start;
+      }
+
+      .detail-folder {
+        width: 54px;
+        height: 54px;
+        font-size: 27px;
+      }
+
+      .detail-kicker {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 1.8px;
+      }
+
+      .detail-status {
+        margin-bottom: 10px;
+      }
+
+      .detail-actions button {
+        flex: 1 1 145px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+
+      .resolution-card {
+        min-height: 330px;
+      }
+
+      .detail-list {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-list--stacked div,
+      .detail-record {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-list--stacked dd {
+        grid-column: 1;
+      }
+
+      .back-to-results {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .results-toolbar,
+      .results-notice {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .results-toolbar {
+        padding: 16px;
+      }
+
+      .results-actions {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .search-nav {
+        flex-wrap: wrap;
+        padding: 10px 16px;
+      }
+
+      .search-card {
+        margin-right: 12px;
+        margin-left: 12px;
+      }
+
+      .filter-fields,
+      .part-field {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .portal-active .part-field label {
+        padding-top: 0;
+        text-align: left;
+      }
+
+      .part-field label {
+        padding-top: 0;
+        text-align: left;
+      }
+
+      .login-card {
+        grid-template-columns: 1fr;
+        min-height: unset;
+        border-radius: 25px;
+      }
+
+      .brand-panel {
+        padding: 32px 26px;
+      }
+
+      .brand-mark-row {
+        margin-bottom: 20px;
+      }
+
+      .quick-links {
+        gap: 12px;
+        margin-top: 25px;
+      }
+
+      .academic-note {
+        margin-top: 24px;
+      }
+
+      .form-panel {
+        padding: 38px 26px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 10px;
+      }
+
+      .brand-panel,
+      .form-panel {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+
+      .modal-backdrop {
+        padding: 18px;
+      }
+
+      .modal-body {
+        padding: 31px 23px 28px;
+      }
+
+      .modal-body p {
+        font-size: 17px;
+      }
+
+      .detail-hero {
+        padding: 22px 16px;
+      }
+
+      .route-heading {
+        font-size: 14px;
+      }
+
+      .case-tab {
+        min-height: 52px;
+        padding: 0 15px;
+        font-size: 11px;
+      }
+
+      .case-tab-panel {
+        padding: 22px 16px;
+      }
+
+      .legal-synthesis {
+        padding: 23px 17px;
+        border-left-width: 7px;
+      }
+
+      .legal-synthesis p {
+        font-size: 14px;
+      }
+
+      .resolution-card {
+        padding: 27px 22px;
+      }
+
+      .detail-back-row {
+        padding: 0 16px 35px;
+      }
+    }
+
+    @media print {
+      body.portal-active {
+        background: #fff;
+      }
+
+      .portal-brandbar,
+      .search-nav,
+      .search-view,
+      .detail-actions,
+      .process-route,
+      .case-tabs,
+      .detail-back-row,
+      .portal-footer,
+      .toast {
+        display: none !important;
+      }
+
+      .case-detail {
+        width: 100%;
+        margin: 0;
+        overflow: visible;
+        box-shadow: none;
+      }
+
+      .case-tab-panel[hidden] {
+        display: none !important;
+      }
+
+      .detail-hero,
+      .resolution-card {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-screen" id="login-screen">
+  <div class="login-card" aria-label="Acceso al entorno académico">
+    <section class="brand-panel" aria-label="Información del entorno">
+      <div>
+        <div class="brand-mark-row">
+          <div class="scale-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M24 9v28M15 15h18M11 18l-6 12h12l-6-12Zm26 0-6 12h12l-6-12ZM17 39h14M20 35h8M24 9l-3-3h6l-3 3Z"/>
+            </svg>
+          </div>
+          <span class="country-tag">DEMO · PERÚ</span>
+        </div>
+        <h1>SIMULADOR DE EXPEDIENTES</h1>
+        <p class="motto">Interfaz ficticia para práctica académica</p>
+
+        <div class="quick-links" aria-label="Accesos informativos">
+          <div class="quick-link">
+            <svg class="quick-link-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2 3 6v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-4Zm0 3.18 5.5 2.45V11c0 3.95-2.4 7.75-5.5 9.12V5.18Z"/>
+            </svg>
+            <div>
+              <strong>Búsqueda por filtros</strong>
+              <span>Consulta de registros ficticios</span>
+            </div>
+          </div>
+          <div class="quick-link">
+            <svg class="quick-link-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M22 7.2 16.8 2l-2 2 1 1-4.6 4.6-1.1-1.1a2 2 0 0 0-2.8 0l-1.4 1.4 3.2 3.2-7.8 7.8 2.8 2.8 7.8-7.8 3.2 3.2 1.4-1.4a2 2 0 0 0 0-2.8l-1.1-1.1 4.6-4.6 1 1 2-2Z"/>
+            </svg>
+            <div>
+              <strong>Búsqueda por código</strong>
+              <span>Ejemplo local de expediente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="academic-note">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"/>
+        </svg>
+        <span>Entorno con fines académicos de estudio procesal.</span>
+      </div>
+    </section>
+
+    <section class="form-panel" aria-label="Formulario de inicio de sesión">
+      <div class="login-content">
+        <div class="eyebrow">
+          <span class="grid-icon" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span>ACCESO AL SISTEMA</span>
+        </div>
+        <h2>Iniciar Sesión</h2>
+        <p class="intro">Ingresa con tus credenciales asignadas</p>
+        <p class="demo-disclaimer">Simulación académica: usa solo la cuenta de ejemplo o credenciales inventadas. No ingreses contraseñas reales.</p>
+
+        <form id="login-form">
+          <div class="field">
+            <label for="username">USUARIO</label>
+            <div class="input-wrap">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5Z"/>
+              </svg>
+              <input id="username" name="username" type="text" placeholder="Usuario de demostración" autocomplete="username" value="admin" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">CONTRASEÑA</label>
+            <div class="input-wrap">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2ZM9 6a3 3 0 0 1 6 0v2H9V6Zm3 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/>
+              </svg>
+              <input id="password" name="password" type="password" placeholder="Contraseña de demostración" autocomplete="current-password" value="123456" required>
+              <button class="password-toggle" id="password-toggle" type="button" aria-label="Mostrar contraseña" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="submit-button" type="submit">
+            INGRESAR AL SISTEMA
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10 17l5-5-5-5M15 12H3M21 4v16"/>
+            </svg>
+          </button>
+        </form>
+        <p class="register-link">Acceso de demostración: admin / 123456</p>
+        <button class="warning-link" id="reopen-warning" type="button">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2 1 21h22L12 2Zm1 15h-2v-2h2v2Zm0-4h-2V9h2v4Z"/>
+          </svg>
+          Ver advertencia de simulación
+        </button>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <main class="search-demo" id="case-panel" aria-label="Portal académico de consulta" hidden>
+    <header class="portal-brandbar">
+      <div class="demo-brand">
+        <span class="demo-mark" aria-hidden="true">DEMO</span>
+        <span class="demo-brand-copy">
+          <strong>PORTAL ACADÉMICO DE CONSULTA</strong>
+          <small>Interfaz ficticia para práctica académica</small>
+        </span>
+      </div>
+      <div class="brand-product">
+        <span class="brand-product-icon" aria-hidden="true">⚖</span>
+        <span class="brand-product-copy">
+          <strong>Consulta de expedientes</strong>
+          <small>VERSIÓN DE DEMOSTRACIÓN · NO OFICIAL</small>
+        </span>
+      </div>
+    </header>
+    <nav class="search-nav" aria-label="Navegación de demostración">
+      <span>INICIO</span>
+      <span>VIDEOTUTORIALES</span>
+      <span>PREGUNTAS FRECUENTES</span>
+      <span>Sesión de demostración: admin</span>
+      <button class="logout-button" id="logout-button" type="button">Cerrar sesión</button>
+    </nav>
+    <section class="search-view" id="search-view" aria-labelledby="case-title">
+      <div class="search-disclaimer">
+        <strong>COMUNICADO · TEXTO DE MUESTRA</strong>
+        <span>Se ha incluido un nuevo campo como medida técnica de protección, para que solo las partes puedan acceder a sus expedientes; a requerimiento de la Autoridad Nacional de Protección de Datos Personales y la Dirección de Fiscalización e Instrucción del Ministerio de Justicia y Derechos Humanos - MINJUSDH. Al amparo de la ley N° 29733, Ley de Protección de Datos Personales.</span>
+        <br><small>Texto reproducido en un prototipo académico sin afiliación oficial. No se consultan expedientes reales.</small>
+      </div>
+      <h2 class="search-heading" id="case-title" tabindex="-1">BÚSQUEDA DE EXPEDIENTES</h2>
+      <p class="search-count" id="search-count">Búsqueda de ejemplo disponible en este prototipo.</p>
+
+      <div class="search-card" id="search-card">
+        <div class="search-tabs" role="tablist" aria-label="Método de búsqueda">
+          <button class="search-tab" id="filters-tab" type="button" role="tab" aria-selected="true" aria-controls="filters-form">POR FILTROS</button>
+          <button class="search-tab" id="code-tab" type="button" role="tab" aria-selected="false" aria-controls="code-form" tabindex="-1">POR CÓDIGO DE EXPEDIENTE</button>
+        </div>
+
+        <form class="search-form" id="filters-form" role="tabpanel" aria-labelledby="filters-tab">
+          <div class="filter-fields">
+            <label for="district">DISTRITO JUDICIAL <span class="required-mark">(*)</span></label>
+            <select id="district" name="district" required>
+              <option value="PUNO" selected>PUNO</option>
+              <option value="AREQUIPA">AREQUIPA (DEMO)</option>
+              <option value="CUSCO">CUSCO (DEMO)</option>
+            </select>
+
+            <label for="instance">INSTANCIA <span class="required-mark">(*)</span></label>
+            <select id="instance" name="instance" required>
+              <option value="JUZGADO DE TRABAJO" selected>JUZGADO DE TRABAJO</option>
+              <option value="JUZGADO CIVIL">JUZGADO CIVIL (DEMO)</option>
+              <option value="SALA SUPERIOR">SALA SUPERIOR (DEMO)</option>
+            </select>
+
+            <label for="specialty">ESPECIALIDAD <span class="required-mark">(*)</span></label>
+            <select id="specialty" name="specialty" required>
+              <option value="LABORAL" selected>LABORAL</option>
+              <option value="CIVIL">CIVIL (DEMO)</option>
+              <option value="FAMILIA">FAMILIA (DEMO)</option>
+            </select>
+
+            <label for="year">AÑO <span class="required-mark">(*)</span></label>
+            <select id="year" name="year" required>
+              <option>2026</option>
+              <option>2025</option>
+              <option>2024</option>
+              <option selected>2022</option>
+              <option>2021</option>
+            </select>
+
+            <label for="case-number">N.º EXPEDIENTE <span class="required-mark">(*)</span></label>
+            <input id="case-number" name="case-number" value="00957" inputmode="numeric" maxlength="5" pattern="[0-9]{1,5}" required>
+          </div>
+          <div class="part-field">
+            <label for="filter-party">PARTE <span class="required-mark">(*)</span></label>
+            <div>
+              <input id="filter-party" name="party" value="CHOQUE TICONA" autocomplete="off" required>
+              <small>Ingresar ambos apellidos (paterno y materno) o la razón social de alguna de las partes involucradas en el proceso, respetando el orden y la forma exacta en que aparecen en cualquiera de las resoluciones del expediente.</small>
+            </div>
+          </div>
+          <p class="required-note">(*) DATOS OBLIGATORIOS</p>
+          <div class="captcha-block" data-captcha="filters">
+            <p class="captcha-title">ESCRIBA EL CÓDIGO MOSTRADO <span class="required-mark">(DEMO)</span></p>
+            <div class="captcha-controls">
+              <output class="captcha-challenge" aria-label="Código de demostración">7KPM</output>
+              <button class="captcha-refresh" type="button" aria-label="Generar otro código de demostración">↻</button>
+              <input class="captcha-input" name="captcha" aria-label="Escriba el código de demostración" placeholder="Código" maxlength="4" autocomplete="off">
+            </div>
+            <button class="consult-button" type="submit">CONSULTAR (DEMO)</button>
+          </div>
+        </form>
+
+        <form class="search-form" id="code-form" role="tabpanel" aria-labelledby="code-tab" hidden>
+          <div class="code-entry">
+            <p class="code-title">CÓDIGO DEL EXPEDIENTE:</p>
+            <div class="code-digits" aria-label="Código separado en campos">
+              <label class="code-digit-wrap"><span class="code-hint">Secuencia 5 dígitos</span><input class="code-digit" aria-label="Secuencia de cinco dígitos" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" value="00957" required></label>
+              <span class="code-separator" aria-hidden="true">-</span>
+              <label class="code-digit-wrap"><span class="code-hint">Año</span><input class="code-digit" aria-label="Año" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" value="2022" required></label>
+              <span class="code-separator" aria-hidden="true">-</span>
+              <label class="code-digit-wrap"><span class="code-hint">Distrito</span><input class="code-digit" aria-label="Código de distrito" maxlength="1" value="0" required></label>
+              <span class="code-separator" aria-hidden="true">-</span>
+              <label class="code-digit-wrap"><span class="code-hint">Número</span><input class="code-digit" aria-label="Número del órgano" maxlength="4" inputmode="numeric" value="2111" required></label>
+              <span class="code-separator" aria-hidden="true">-</span>
+              <label class="code-digit-wrap"><span class="code-hint">Especialidad</span><input class="code-digit" aria-label="Código de especialidad" maxlength="2" value="JR" required></label>
+              <span class="code-separator" aria-hidden="true">-</span>
+              <label class="code-digit-wrap"><span class="code-hint">Tipo</span><input class="code-digit" aria-label="Código de tipo" maxlength="2" value="LA" required></label>
+              <span class="code-separator" aria-hidden="true">-</span>
+              <label class="code-digit-wrap"><span class="code-hint">Secuencia 2 dígitos</span><input class="code-digit" aria-label="Secuencia de dos dígitos" maxlength="2" inputmode="numeric" pattern="[0-9]{2}" value="01" required></label>
+            </div>
+            <button class="example-code" id="fill-example-code" type="button">Ejemplo completado automáticamente: 00957-2022-0-2111-JR-LA-01 (ficticio)</button>
+          </div>
+          <div class="part-field">
+            <label for="code-party">PARTE <span class="required-mark">(*)</span></label>
+            <div>
+              <input id="code-party" name="party" value="CHOQUE TICONA" autocomplete="off" required>
+              <small>Ingresar ambos apellidos (paterno y materno) o la razón social de alguna de las partes involucradas en el proceso, respetando el orden y la forma exacta en que aparecen en cualquiera de las resoluciones del expediente.</small>
+            </div>
+          </div>
+          <p class="required-note">(*) DATOS OBLIGATORIOS</p>
+          <div class="captcha-block" data-captcha="code">
+            <p class="captcha-title">ESCRIBA EL CÓDIGO MOSTRADO <span class="required-mark">(DEMO)</span></p>
+            <div class="captcha-controls">
+              <output class="captcha-challenge" aria-label="Código de demostración">4R8W</output>
+              <button class="captcha-refresh" type="button" aria-label="Generar otro código de demostración">↻</button>
+              <input class="captcha-input" name="captcha" aria-label="Escriba el código de demostración" placeholder="Código" maxlength="4" autocomplete="off">
+            </div>
+            <button class="consult-button" type="submit">CONSULTAR (DEMO)</button>
+          </div>
+        </form>
+      </div>
+      <section class="search-results" id="search-results" aria-labelledby="results-title" aria-live="polite" hidden>
+        <header class="results-toolbar">
+          <h2 class="results-title" id="results-title">
+            <span class="results-title-icon" aria-hidden="true">☷</span>
+            RESULTADOS DE LA CONSULTA
+          </h2>
+          <div class="results-actions">
+            <button class="upload-case-button" id="load-case-button" type="button">📂 &nbsp; CARGAR MI EXPEDIENTE</button>
+            <button class="new-search-button" id="new-search-button" type="button">NUEVA BÚSQUEDA</button>
+          </div>
+        </header>
+        <div class="results-notice">
+          <span>Se encontraron 1 expediente(s) vinculados a la búsqueda</span>
+          <time id="results-updated"></time>
+        </div>
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th scope="col">N° EXPEDIENTE</th>
+                <th scope="col">MATERIA / DELITO</th>
+                <th scope="col">ÓRGANO JURISDICCIONAL</th>
+                <th scope="col">ESTADO</th>
+                <th scope="col">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><button class="results-case-number" type="button" data-open-case aria-label="Consultar expediente 00957-2022-0-2111-JR-LA-01">00957-2022-0-2111-JR-LA-01</button></td>
+                <td>DESNATURALIZACIÓN DE CONTRATO</td>
+                <td>JUZGADO DE TRABAJO - ZONA NORTE - SEDE JULIACA</td>
+                <td><span class="case-status">CONCLUIDO</span></td>
+                <td><button class="result-view-button" type="button" data-open-case>CONSULTAR</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+    <section class="case-detail" id="case-detail" aria-labelledby="detail-title" hidden>
+      <header class="detail-hero">
+        <div class="detail-identity">
+          <div class="detail-folder" aria-hidden="true">▣</div>
+          <div>
+            <span class="detail-kicker">SISTEMA INTEGRADO JUDICIAL (SIJ)</span>
+            <span class="detail-status">EXPEDIENTE CONCLUIDO</span>
+            <h2 class="detail-title" id="detail-title" tabindex="-1">N° 00957-2022-0-2111-JR-LA-01</h2>
+            <p class="detail-location">Distrito Judicial de Puno • Juzgado de Trabajo - Zona Norte - Sede Juliaca • Etapa: Sentencia firme (archivo definitivo)</p>
+          </div>
+        </div>
+        <div class="detail-actions" aria-label="Acciones del expediente">
+          <button class="detail-print" id="print-report" type="button">▣ &nbsp; IMPRIMIR REPORTE</button>
+          <button class="detail-summary-action" id="smart-summary" type="button">✦ &nbsp; RESUMEN INTELIGENTE</button>
+          <button class="detail-examine" id="examine-case" type="button">⌕ &nbsp; EXAMINAR CASO</button>
+          <button class="detail-reniec" id="reniec-action" type="button">▤ &nbsp; RENIEC</button>
+        </div>
+      </header>
+
+      <section class="process-route" aria-labelledby="route-title">
+        <h3 class="route-heading" id="route-title"><span aria-hidden="true">▮</span> MAPA PROCESAL PREDICTIVO (RUTA DEL EXPEDIENTE)</h3>
+        <div class="route-scroller">
+          <ol class="route-stages" aria-label="Etapas del proceso">
+            <li><button class="route-stage" type="button" data-state="past" aria-pressed="false" data-description="02/09/2022: se presentó la demanda laboral y se inició el proceso."><span class="route-stage-marker" aria-hidden="true">▧</span><span class="route-stage-label">Demanda</span><time class="route-stage-date" datetime="2022-09-02">02/09/2022</time><span class="route-stage-current">Etapa superada</span></button></li>
+            <li><button class="route-stage" type="button" data-state="past" aria-pressed="false" data-description="20/09/2022: el juzgado revisó los requisitos y calificó la demanda."><span class="route-stage-marker" aria-hidden="true">⌕</span><span class="route-stage-label">Calificación</span><time class="route-stage-date" datetime="2022-09-20">20/09/2022</time><span class="route-stage-current">Etapa superada</span></button></li>
+            <li><button class="route-stage" type="button" data-state="past" aria-pressed="false" data-description="22/11/2022: se presentó la contestación de la demanda."><span class="route-stage-marker" aria-hidden="true">☷</span><span class="route-stage-label">Contestación</span><time class="route-stage-date" datetime="2022-11-22">22/11/2022</time><span class="route-stage-current">Etapa superada</span></button></li>
+            <li><button class="route-stage" type="button" data-state="past" aria-pressed="false" data-description="10/05/2023: se realizaron las audiencias de conciliación y juzgamiento."><span class="route-stage-marker" aria-hidden="true">♟</span><span class="route-stage-label">Audiencia</span><time class="route-stage-date" datetime="2023-05-10">10/05/2023</time><span class="route-stage-current">Etapa superada</span></button></li>
+            <li><button class="route-stage" type="button" data-state="current" aria-pressed="true" aria-current="step" data-description="12/05/2023: se emitió la sentencia de primera instancia; el expediente registra sentencia firme y archivo definitivo."><span class="route-stage-marker" aria-hidden="true">⚒</span><span class="route-stage-label">Sentencia 1ra Inst.</span><time class="route-stage-date" datetime="2023-05-12">12/05/2023</time><span class="route-stage-current">Estado actual</span></button></li>
+            <li><button class="route-stage" type="button" data-state="future" aria-pressed="false" data-description="No se registra una etapa de apelación en este expediente concluido."><span class="route-stage-marker" aria-hidden="true">⇧</span><span class="route-stage-label">Apelación</span><span class="route-stage-date">Sin registro</span><span class="route-stage-current">Etapa futura</span></button></li>
+            <li><button class="route-stage" type="button" data-state="future" aria-pressed="false" data-description="No se registra actuación ante la Sala Superior en este expediente."><span class="route-stage-marker" aria-hidden="true">▤</span><span class="route-stage-label">Sala Superior</span><span class="route-stage-date">Sin registro</span><span class="route-stage-current">Etapa futura</span></button></li>
+          </ol>
+        </div>
+        <p class="route-description" id="route-description" aria-live="polite">12/05/2023: se emitió la sentencia de primera instancia; el expediente registra sentencia firme y archivo definitivo.</p>
+      </section>
+
+      <div class="case-tabs" role="tablist" aria-label="Información del expediente">
+        <button class="case-tab" id="summary-tab" type="button" role="tab" aria-selected="true" aria-controls="summary-panel">RESUMEN</button>
+        <button class="case-tab" id="metadata-tab" type="button" role="tab" aria-selected="false" aria-controls="metadata-panel" tabindex="-1">METADATOS</button>
+        <button class="case-tab" id="parties-tab" type="button" role="tab" aria-selected="false" aria-controls="parties-panel" tabindex="-1">SUJETOS PROCESALES</button>
+        <button class="case-tab" id="actions-tab" type="button" role="tab" aria-selected="false" aria-controls="actions-panel" tabindex="-1">ACTUACIONES</button>
+        <button class="case-tab" id="timeline-tab" type="button" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1">LÍNEA DE TIEMPO</button>
+      </div>
+
+      <section class="case-tab-panel" id="summary-panel" role="tabpanel" aria-labelledby="summary-tab">
+        <h3 class="summary-heading">⚖ &nbsp; SÍNTESIS JURÍDICA DEL CASO</h3>
+        <div class="summary-grid">
+          <article class="legal-synthesis">
+            <h4>CASO</h4>
+            <p>Este es un proceso laboral de desnaturalización de contrato de tercerización laboral y reposición, donde un extrabajador demanda a la empresa principal (Electro Puno S.A.A.) y a diversas empresas contratistas (Consorcio Galcas Sur, Fegal S.R.L., Galcas Contratistas Generales S.A.C. y Voltec Contratistas Generales S.R.L.), alegando que prestó servicios personales y subordinados durante varios años (desde 2016) bajo la apariencia de contratos de tercerización y recibos por honorarios, configurándose un despido incausado. El proceso inició con una demanda declarada inadmisible, luego subsanada, admitida a trámite, con el desarrollo de la audiencia de conciliación y la audiencia de juzgamiento. En la Sentencia N.° 59-2023-LA (Resolución N.° 04), el Juzgado Especializado de Trabajo declaró infundada la excepción de caducidad e infundada en todos sus extremos la demanda, disponiendo el archivo definitivo del proceso sin costas ni costos.</p>
+            <div class="case-tags"><span>Laboral</span><span>Concluido</span><span>Etapa: sentencia firme (archivo definitivo)</span></div>
+            <div class="overall-progress" aria-label="Avance global del proceso: 80 por ciento">
+              <div class="progress-caption"><span>AVANCE GLOBAL DEL PROCESO</span><span>80%</span></div>
+              <div class="progress-track" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Avance global del proceso"><div class="progress-fill"></div></div>
+            </div>
+          </article>
+          <aside class="resolution-card">
+            <h4>SITUACIÓN RESOLUTIVA</h4>
+            <h3>SENTENCIA INFUNDADA</h3>
+            <p>En la Sentencia N.° 59-2023-LA (Resolución N.° 04), el Juzgado Especializado de Trabajo declaró infundada la excepción de caducidad e infundada en todos sus extremos la demanda, estableciendo que el demandante no logró acreditar haber estado bajo la subordinación directa de la empresa principal Electro Puno S.A.A. ni demostró la desnaturalización de los contratos de tercerización comercial, disponiendo el archivo definitivo del proceso sin costas ni costos.</p>
+            <span class="resolution-number">Sentencia N.° 59-2023-LA · Resolución N.° 04</span>
+          </aside>
+        </div>
+      </section>
+
+      <section class="case-tab-panel" id="metadata-panel" role="tabpanel" aria-labelledby="metadata-tab" hidden>
+        <h3 class="summary-heading">METADATOS DEL EXPEDIENTE</h3>
+        <dl class="detail-list">
+          <div><dt>Número de expediente</dt><dd>00957-2022-0-2111-JR-LA-01</dd></div>
+          <div><dt>Distrito judicial</dt><dd>Puno</dd></div>
+          <div><dt>Órgano jurisdiccional</dt><dd>Juzgado de Trabajo - Zona Norte - Sede Juliaca</dd></div>
+          <div><dt>Especialidad</dt><dd>Laboral</dd></div>
+          <div><dt>Materia</dt><dd>Desnaturalización de contrato y reposición</dd></div>
+          <div><dt>Estado</dt><dd>Concluido · sentencia firme · archivo definitivo</dd></div>
+          <div><dt>Fecha de inicio</dt><dd>02/09/2022</dd></div>
+          <div><dt>Última actuación</dt><dd>12/05/2023 · Sentencia de primera instancia</dd></div>
+        </dl>
+      </section>
+
+      <section class="case-tab-panel" id="parties-panel" role="tabpanel" aria-labelledby="parties-tab" hidden>
+        <h3 class="summary-heading">SUJETOS PROCESALES</h3>
+        <dl class="detail-list detail-list--stacked">
+          <div><dt>Demandante</dt><dd>Extrabajador demandante (registro académico ficticio)</dd></div>
+          <div><dt>Demandada principal</dt><dd>Electro Puno S.A.A.</dd></div>
+          <div><dt>Demandadas contratistas</dt><dd>Consorcio Galcas Sur; Fegal S.R.L.; Galcas Contratistas Generales S.A.C.; Voltec Contratistas Generales S.R.L.</dd></div>
+          <div><dt>Órgano jurisdiccional</dt><dd>Juzgado Especializado de Trabajo de Juliaca</dd></div>
+        </dl>
+      </section>
+
+      <section class="case-tab-panel" id="actions-panel" role="tabpanel" aria-labelledby="actions-tab" hidden>
+        <h3 class="summary-heading">ACTUACIONES PRINCIPALES</h3>
+        <div class="record-list">
+          <article class="detail-record"><strong>02/09/2022</strong><span>Presentación de demanda laboral sobre desnaturalización de contrato y reposición.</span></article>
+          <article class="detail-record"><strong>20/09/2022</strong><span>Calificación de la demanda; se requiere subsanar las observaciones.</span></article>
+          <article class="detail-record"><strong>22/11/2022</strong><span>Presentación de contestación de la demanda.</span></article>
+          <article class="detail-record"><strong>10/05/2023</strong><span>Audiencias de conciliación y juzgamiento.</span></article>
+          <article class="detail-record"><strong>12/05/2023</strong><span>Sentencia N.° 59-2023-LA (Resolución N.° 04); se declara infundada la demanda y se dispone el archivo definitivo.</span></article>
+        </div>
+      </section>
+
+      <section class="case-tab-panel" id="timeline-panel" role="tabpanel" aria-labelledby="timeline-tab" hidden>
+        <h3 class="summary-heading">LÍNEA DE TIEMPO DEL EXPEDIENTE</h3>
+        <div class="timeline-list">
+          <article class="timeline-entry"><time datetime="2022-09-02">02/09/2022 · Demanda</time>Inicio del proceso laboral.</article>
+          <article class="timeline-entry"><time datetime="2022-09-20">20/09/2022 · Calificación</time>Revisión inicial de los requisitos de la demanda.</article>
+          <article class="timeline-entry"><time datetime="2022-11-22">22/11/2022 · Contestación</time>Respuesta de las partes demandadas.</article>
+          <article class="timeline-entry"><time datetime="2023-05-10">10/05/2023 · Audiencia</time>Audiencias de conciliación y juzgamiento.</article>
+          <article class="timeline-entry"><time datetime="2023-05-12">12/05/2023 · Sentencia 1ra Inst.</time>Sentencia infundada y archivo definitivo del proceso.</article>
+        </div>
+      </section>
+
+      <div class="detail-back-row">
+        <button class="back-to-results" id="back-to-results" type="button">← &nbsp; REGRESAR AL LISTADO</button>
+      </div>
+    </section>
+    <footer class="portal-footer">
+      <div class="footer-pattern" aria-hidden="true"></div>
+      Prototipo académico sin afiliación oficial · Datos y resultados ficticios
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="warning-backdrop">
+    <section class="warning-modal" role="dialog" aria-modal="true" aria-labelledby="warning-message">
+      <div class="modal-header">
+        <div class="warning-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.3 3.9 1.8 18.5A1.7 1.7 0 0 0 3.3 21h17.4a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+            <path d="M12 9v4m0 4h.01"/>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p id="warning-message">Advertencia: Esto solo es un entorno de simulación académica</p>
+        <button class="understood-button" id="dismiss-warning" type="button">Entendido</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const warningBackdrop = document.getElementById("warning-backdrop");
+    const dismissWarningButton = document.getElementById("dismiss-warning");
+    const reopenWarningButton = document.getElementById("reopen-warning");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const passwordToggle = document.getElementById("password-toggle");
+    const loginScreen = document.getElementById("login-screen");
+    const casePanel = document.getElementById("case-panel");
+    const toast = document.getElementById("toast");
+    const filtersTab = document.getElementById("filters-tab");
+    const codeTab = document.getElementById("code-tab");
+    const filtersForm = document.getElementById("filters-form");
+    const codeForm = document.getElementById("code-form");
+    const searchCard = document.getElementById("search-card");
+    const searchResults = document.getElementById("search-results");
+    const searchView = document.getElementById("search-view");
+    const caseDetail = document.getElementById("case-detail");
+    const demoPassword = "123456";
+    let toastTimeout;
+
+    function showToast(message, type = "error") {
+      window.clearTimeout(toastTimeout);
+      toast.textContent = message;
+      toast.dataset.type = type;
+      toast.classList.add("is-visible");
+      toastTimeout = window.setTimeout(() => {
+        toast.classList.remove("is-visible");
+      }, 4000);
+    }
+
+    function closeWarning() {
+      warningBackdrop.hidden = true;
+      usernameInput.focus();
+    }
+
+    function openWarning() {
+      warningBackdrop.hidden = false;
+      dismissWarningButton.focus();
+    }
+
+    dismissWarningButton.addEventListener("click", closeWarning);
+    reopenWarningButton.addEventListener("click", openWarning);
+
+    passwordToggle.addEventListener("click", () => {
+      const isPasswordHidden = passwordInput.type === "password";
+      passwordInput.type = isPasswordHidden ? "text" : "password";
+      passwordToggle.setAttribute("aria-pressed", String(isPasswordHidden));
+      passwordToggle.setAttribute(
+        "aria-label",
+        isPasswordHidden ? "Ocultar contraseña" : "Mostrar contraseña"
+      );
+    });
+
+    document.getElementById("login-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (usernameInput.value.trim() === "admin" && passwordInput.value === demoPassword) {
+        loginScreen.hidden = true;
+        casePanel.hidden = false;
+        document.body.classList.add("portal-active");
+        document.getElementById("case-title").focus();
+        return;
+      }
+      showToast("Acceso de prueba incorrecto. Usa admin / 123456.");
+    });
+
+    document.getElementById("logout-button").addEventListener("click", () => {
+      casePanel.hidden = true;
+      loginScreen.hidden = false;
+      document.body.classList.remove("portal-active");
+      passwordInput.value = demoPassword;
+      usernameInput.focus();
+    });
+
+    function showSearchForm() {
+      caseDetail.hidden = true;
+      searchView.hidden = false;
+      searchResults.hidden = true;
+      searchCard.hidden = false;
+      document.getElementById("search-count").hidden = false;
+      filtersTab.click();
+      document.getElementById("case-title").focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.getElementById("new-search-button").addEventListener("click", showSearchForm);
+
+    document.getElementById("load-case-button").addEventListener("click", () => {
+      showToast("Carga de archivos desactivada en este prototipo académico.");
+    });
+
+    function openCaseDetail() {
+      searchView.hidden = true;
+      caseDetail.hidden = false;
+      document.getElementById("detail-title").focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.querySelectorAll("[data-open-case]").forEach((button) => {
+      button.addEventListener("click", openCaseDetail);
+    });
+
+    document.getElementById("back-to-results").addEventListener("click", () => {
+      caseDetail.hidden = true;
+      searchView.hidden = false;
+      const caseNumberButton = document.querySelector(".results-case-number");
+      caseNumberButton.focus();
+      window.scrollTo({ top: searchResults.offsetTop, behavior: "smooth" });
+    });
+
+    const caseTabs = Array.from(document.querySelectorAll(".case-tab"));
+    function selectCaseTab(selectedTab, moveFocus = true) {
+      caseTabs.forEach((tab) => {
+        const isSelected = tab === selectedTab;
+        tab.setAttribute("aria-selected", String(isSelected));
+        tab.tabIndex = isSelected ? 0 : -1;
+        document.getElementById(tab.getAttribute("aria-controls")).hidden = !isSelected;
+      });
+      if (moveFocus) selectedTab.focus();
+    }
+
+    caseTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectCaseTab(tab, false));
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex = index;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % caseTabs.length;
+        else if (event.key === "ArrowLeft") nextIndex = (index - 1 + caseTabs.length) % caseTabs.length;
+        else if (event.key === "Home") nextIndex = 0;
+        else if (event.key === "End") nextIndex = caseTabs.length - 1;
+        else return;
+
+        event.preventDefault();
+        selectCaseTab(caseTabs[nextIndex]);
+      });
+    });
+
+    document.querySelectorAll(".route-stage").forEach((stage) => {
+      stage.addEventListener("click", () => {
+        document.querySelectorAll(".route-stage").forEach((item) => {
+          item.setAttribute("aria-pressed", String(item === stage));
+        });
+        document.getElementById("route-description").textContent = stage.dataset.description;
+      });
+    });
+
+    document.getElementById("print-report").addEventListener("click", () => window.print());
+    document.getElementById("smart-summary").addEventListener("click", () => {
+      selectCaseTab(document.getElementById("summary-tab"), false);
+      document.getElementById("summary-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+      showToast("Se muestra la síntesis académica del expediente. No se utiliza inteligencia artificial externa.", "success");
+    });
+    document.getElementById("examine-case").addEventListener("click", () => {
+      document.querySelector(".process-route").scrollIntoView({ behavior: "smooth", block: "start" });
+      document.querySelector(".route-stage[data-state='current']").focus();
+    });
+    document.getElementById("reniec-action").addEventListener("click", () => {
+      showToast("La consulta RENIEC no está disponible en este prototipo académico.");
+    });
+
+    function selectSearchTab(selectedTab) {
+      const showFilters = selectedTab === filtersTab;
+      filtersTab.setAttribute("aria-selected", String(showFilters));
+      filtersTab.tabIndex = showFilters ? 0 : -1;
+      codeTab.setAttribute("aria-selected", String(!showFilters));
+      codeTab.tabIndex = showFilters ? -1 : 0;
+      filtersForm.hidden = !showFilters;
+      codeForm.hidden = showFilters;
+      selectedTab.focus();
+    }
+
+    filtersTab.addEventListener("click", () => selectSearchTab(filtersTab));
+    codeTab.addEventListener("click", () => selectSearchTab(codeTab));
+    [filtersTab, codeTab].forEach((tab) => {
+      tab.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          event.preventDefault();
+          selectSearchTab(tab === filtersTab ? codeTab : filtersTab);
+        }
+      });
+    });
+
+    document.querySelectorAll(".captcha-block").forEach((captchaBlock) => {
+      const challenge = captchaBlock.querySelector(".captcha-challenge");
+      const captchaInput = captchaBlock.querySelector(".captcha-input");
+      const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+      function refreshCaptcha() {
+        const characters = Array.from(
+          { length: 4 },
+          () => alphabet[Math.floor(Math.random() * alphabet.length)]
+        );
+        challenge.textContent = characters.join("");
+        captchaInput.value = "";
+      }
+
+      captchaBlock.querySelector(".captcha-refresh").addEventListener("click", refreshCaptcha);
+      captchaBlock.closest("form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const enteredCode = captchaInput.value.trim().toUpperCase();
+        if (!enteredCode) {
+          showToast("Escribe el código CAPTCHA mostrado para continuar.");
+          captchaInput.focus();
+          return;
+        }
+        if (enteredCode !== challenge.textContent) {
+          showToast("El código de demostración no coincide. Vuelve a intentarlo.");
+          refreshCaptcha();
+          captchaInput.focus();
+          return;
+        }
+
+        const isCodeSearch = captchaBlock.dataset.captcha === "code";
+        const party = (isCodeSearch
+          ? document.getElementById("code-party").value
+          : document.getElementById("filter-party").value
+        ).trim().toUpperCase();
+        const caseCode = isCodeSearch
+          ? Array.from(codeForm.querySelectorAll(".code-digit"), (field) => field.value.trim().toUpperCase()).join("-")
+          : [
+              document.getElementById("case-number").value.trim(),
+              document.getElementById("year").value,
+              "0",
+              "2111",
+              "JR",
+              "LA",
+              "01"
+            ].join("-");
+        const isExampleMatch = caseCode === "00957-2022-0-2111-JR-LA-01"
+          && party === "CHOQUE TICONA"
+          && (isCodeSearch || (
+            document.getElementById("district").value === "PUNO"
+            && document.getElementById("instance").value === "JUZGADO DE TRABAJO"
+            && document.getElementById("specialty").value === "LABORAL"
+          ));
+        if (!isExampleMatch) {
+          showToast("No se encontraron coincidencias. Prueba con el expediente ficticio de ejemplo.");
+          refreshCaptcha();
+          return;
+        }
+        searchCard.hidden = true;
+        document.getElementById("search-count").hidden = true;
+        searchResults.hidden = false;
+        document.getElementById("results-updated").textContent = `Actualizado: ${new Intl.DateTimeFormat("es-PE", {
+          dateStyle: "short",
+          timeStyle: "medium"
+        }).format(new Date())}`;
+        showToast("Código de demostración correcto. No se consultó ningún sistema externo.", "success");
+        refreshCaptcha();
+        searchResults.scrollIntoView({ behavior: "instant", block: "start" });
+      });
+    });
+
+    document.getElementById("fill-example-code").addEventListener("click", () => {
+      const example = ["00957", "2022", "0", "2111", "JR", "LA", "01"];
+      codeForm.querySelectorAll(".code-digit").forEach((field, index) => {
+        field.value = example[index];
+      });
+    });
+
+    codeForm.querySelectorAll(".code-digit").forEach((field, index, fields) => {
+      field.addEventListener("input", () => {
+        field.value = field.value.toUpperCase().slice(0, field.maxLength);
+        if (field.value.length === field.maxLength && fields[index + 1]) {
+          fields[index + 1].focus();
+        }
+      });
+      field.addEventListener("keydown", (event) => {
+        if (event.key === "Backspace" && !field.value && fields[index - 1]) {
+          fields[index - 1].focus();
+        }
+      });
+    });
+
+    dismissWarningButton.focus();
+  </script>
+</body>
+</html>
